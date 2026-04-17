@@ -1,5 +1,4 @@
 fastapi
-uvicorn
+uvicorn[standard]
 redis
-pydantic
 pydantic-settings

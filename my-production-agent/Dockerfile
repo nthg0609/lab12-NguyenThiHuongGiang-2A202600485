@@ -1,20 +1,14 @@
-# Use an official Python runtime as a parent image
-FROM python:3.9-slim
-
-# Set the working directory in the container
+# Stage 1: Builder
+FROM python:3.9-slim as builder
 WORKDIR /app
-
-# Copy the requirements file into the container
 COPY requirements.txt .
+RUN mkdir /install && pip install --no-cache-dir --prefix=/install -r requirements.txt
 
-# Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy the rest of the application code
+# Stage 2: Runtime
+FROM python:3.9-slim
+WORKDIR /app
+ENV PATH="/usr/local/bin:$PATH"
+RUN pip install --no-cache-dir uvicorn fastapi
+COPY --from=builder /install /usr/local
 COPY . .
-
-# Expose the port the app runs on
-EXPOSE 8000
-
-# Command to run the application
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

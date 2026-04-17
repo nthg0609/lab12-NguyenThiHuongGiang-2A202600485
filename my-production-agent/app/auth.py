@@ -1,11 +1,16 @@
-from fastapi import HTTPException, Security, Depends
+"""API key authentication helpers."""
+from fastapi import HTTPException, Security
 from fastapi.security.api_key import APIKeyHeader
 
-API_KEY = "mysecureapikey"  # Replace with a secure key from environment variables
-API_KEY_NAME = "X-API-Key"
-api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=True)
+from app.config import settings
 
-def get_api_key(api_key: str = Depends(api_key_header)):
-    if api_key != API_KEY:
-        raise HTTPException(status_code=403, detail="Could not validate API key")
+api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
+
+
+def verify_api_key(api_key: str = Security(api_key_header)) -> str:
+    if not api_key or api_key != settings.agent_api_key:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid or missing API key. Include header: X-API-Key: <key>",
+        )
     return api_key
