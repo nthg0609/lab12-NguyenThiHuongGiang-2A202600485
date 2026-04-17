@@ -31,18 +31,27 @@ from pydantic import BaseModel
 import uvicorn
 from utils.mock_llm import ask
 
-# ── Redis (optional — fallback to in-memory dict nếu không có Redis)
+# ── Redis storage
+import redis
+
+REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+ALLOW_IN_MEMORY_FALLBACK = os.getenv("ALLOW_IN_MEMORY_FALLBACK", "false").lower() == "true"
+
 try:
-    import redis
-    REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
     _redis = redis.from_url(REDIS_URL, decode_responses=True)
     _redis.ping()
     USE_REDIS = True
     print("✅ Connected to Redis")
-except Exception:
+except Exception as exc:
+    if not ALLOW_IN_MEMORY_FALLBACK:
+        raise RuntimeError(
+            "Redis is required for stateless mode. "
+            "Set REDIS_URL correctly or explicitly enable "
+            "ALLOW_IN_MEMORY_FALLBACK=true for local demo mode."
+        ) from exc
     USE_REDIS = False
     _memory_store: dict = {}
-    print("⚠️  Redis not available — using in-memory store (not scalable!)")
+    print("⚠️  Redis not available — using in-memory store (demo mode only)")
 
 
 logging.basicConfig(level=logging.INFO)

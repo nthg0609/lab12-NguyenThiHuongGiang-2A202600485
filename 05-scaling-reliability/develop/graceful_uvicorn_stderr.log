@@ -1,0 +1,7 @@
+INFO:     Started server process [27832]
+INFO:     Waiting for application startup.
+2026-04-17 21:34:15,777 INFO Agent starting up...
+2026-04-17 21:34:15,778 INFO Loading model and checking dependencies...
+2026-04-17 21:34:15,980 INFO \u2705 Agent is ready!
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8003 (Press CTRL+C to quit)
