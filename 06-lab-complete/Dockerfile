@@ -36,8 +36,8 @@ RUN chown -R agent:agent /app
 
 USER agent
 
-# Ensure uvicorn is installed globally and accessible
-RUN pip install --no-cache-dir uvicorn
+# Ensure uvicorn is installed with executable
+RUN pip install --no-cache-dir uvicorn[standard]
 
 ENV PATH=/home/agent/.local/bin:$PATH
 ENV PYTHONPATH=/app
