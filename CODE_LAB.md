@@ -929,4 +929,4 @@ A: Railway: `railway scale <replicas>`. Render: Dashboard → Settings → Insta
 
 ---
 
-**Happy Deploying! **
+**Happy Deploying! *
